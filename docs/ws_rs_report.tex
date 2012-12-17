@@ -8,16 +8,16 @@
 \usepackage{ucs}
 
 %% Math support.
-%\usepackage{amsmath}
-%\usepackage{amsfonts}
-%\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
 
 %% Dots after section titles.
 \usepackage{titlesec}
 \titlelabel{\thetitle.\quad}
 
 %% Prevent Latex from complaining about all unescaped underscores.
-\catcode`\_=12
+% \catcode`\_=12
 
 %% Use Russian formatting rules.
 \usepackage[russian]{babel}
@@ -80,6 +80,22 @@
 \section{Постановка задачи.}
 
 В рамках данной работы требовалось реализовать и протестировать два метода стегоанализа: улучшенный WS-метод \cite{ker} и RS-метод \cite{fridrich}.
+
+Для реализации WS-метода предлагалось использовать фильтрующую матрицу следующего вида:
+
+\begin{equation*}
+\begin{pmatrix}
+-\frac{1}{4}	& \frac{1}{2}	& -\frac{1}{4}\\
+\frac{1}{2}		& 0				& \frac{1}{2}\\
+-\frac{1}{4}	& \frac{1}{2}	& -\frac{1}{4}
+\end{pmatrix}
+\end{equation*}
+
+\noindent и веса пикселей следующего вида:
+
+\begin{equation*}
+w_i \propto \frac{1}{1+\sigma{}_i}
+\end{equation*}
 
 Каждый из реализованных алгоритмов предлагалось протестировать на следующих выборках изображений:
 
