@@ -1,0 +1,163 @@
+\documentclass[12pt,a4paper,russian,numbers=endperiod]{scrartcl}
+
+%% Uncomment this line to use Cyrillic TNR fonts.
+%\usepackage{cyrtimes}
+
+%% UTF-8 support.
+\usepackage[utf8x]{inputenc}
+\usepackage{ucs}
+
+%% Math support.
+%\usepackage{amsmath}
+%\usepackage{amsfonts}
+%\usepackage{amssymb}
+
+%% Dots after section titles.
+\usepackage{titlesec}
+\titlelabel{\thetitle.\quad}
+
+%% Prevent Latex from complaining about all unescaped underscores.
+\catcode`\_=12
+
+%% Use Russian formatting rules.
+\usepackage[russian]{babel}
+\usepackage{indentfirst}
+
+%% Reduce fields.
+\usepackage{fullpage}
+
+%% Copy-pase and search support for russian texts.
+\usepackage{cmap}
+
+%% Hyperlinks support.
+\usepackage[pdftex]{hyperref}
+\hypersetup{
+        unicode=true,
+        pdftitle={},pdfauthor={},pdfkeywords={},
+        colorlinks,citecolor=black,filecolor=black,linkcolor=black,urlcolor=blue
+}
+\urlstyle{same}
+
+% Captions
+\usepackage{caption}
+
+%% Code listings support with highlighting and captions above listings.
+%\usepackage{floatrow}
+%\usepackage{minted}
+%\floatsetup[listing]{style=Plaintop}
+
+%% Tables with strentching columns and word wrapping.
+%\usepackage{tabularx}
+%\renewcommand{\arraystretch}{1.5} % Hice row spacing in tables
+
+%% Uncomment for multicolumn text layout support.
+%\usepackage{multicol}
+
+%% Uncomment to use conditional structures.
+%\usepackage{ifthen}
+
+%% Uncomment to use fixme notes
+% \usepackage[layout=inline,status=draft]{fixme}
+
+%%%
+%%% Define helper commands
+%%%
+
+%% Inline comment
+\newcommand{\comment}[1]{}
+
+
+\title{Отчёт по изучению улучшенного WS-метода и RS-метода стегоанализа.}
+
+\begin{document}
+
+\maketitle
+
+%\pagebreak % Do we need page break after title page?
+
+%\tableofcontents % Do we need ToC?
+
+\section{Постановка задачи.}
+
+В рамках данной работы требовалось реализовать и протестировать два метода стегоанализа: улучшенный WS-метод \cite{ker} и RS-метод \cite{fridrich}.
+
+Каждый из реализованных алгоритмов предлагалось протестировать на следующих выборках изображений:
+
+\begin{enumerate}
+	\item 100 изображений в формате PGM, размера $512\times{}512$ без внедрения информации;
+	\item те же изображения, со внедрением информации 5\%.
+\end{enumerate}
+
+На основе полученных экспериментальных данных вычислить среднюю абсолютную ошибку определения количества внедрённой информации.
+
+\section{Реализация.}
+
+В рамках данной работы была выполнена реализация обоих алгоритмов на языке Java. Данный  выбор обусловлен тем, что исследуемые алгоритмы не требуют большого количества операций выделения и освобождения памяти, а при прочих равных скорость разработки на Java выше, нежли на C/C++. При этом производительность самих вычислений на обоих языках сопоставима благодаря наличию в Java VM поддержки Just-in-time компиляции.
+
+Реализация обоих алгоритмов была выполнена в точности с предложенными в статьях \cite{ker} и \cite{fridrich} формулами и не требует дополнительных комментариев.
+
+Исходные коды доступны по адресу: \url{https://github.com/nevkontakte/Steganography}.
+
+\section{Тестирование и результаты.}
+
+Для тестирования алгоритма были использованы изображения из базы данных конкурса BOW2\footnote{\url{http://bows2.ec-lille.fr/BOWS2OrigEp3.tgz}}, из которых были выбраны изображения \path{0.pgm} --- \path{100.pgm}.
+
+Симуляция внедрения доли информации $p$ относительно ёмкости контейнера выполнялась путём замены младших битов изображения с вероятностью $p/2$.
+
+\subsection{Улучшенный WS-метод.}
+
+Средняя абсолютная ошибка (среднее отклонение определённого количества внедрённой информации от реального):
+\begin{itemize}
+	\item для незаполненных изображений --- \textbf{0,0159};
+	\item для изображений, заполненных на 5\% --- \textbf{0,0283};
+	\item общая --- \textbf{0,0221}.
+\end{itemize}
+
+Дисперсия определённого количества внедрённой информации:
+
+\begin{itemize}
+	\item для незаполненных изображений --- \textbf{0,001483};
+	\item для изображений, заполненных на 5\% --- \textbf{0,001719};
+	\item усреднённая --- \textbf{0,001601}.
+\end{itemize}
+
+Полные статистические данные приведены в файле \path{ws_detector.ods} (файл таблиц LibreOffice Calc).
+
+\subsection{RS-метод.}
+
+Средняя абсолютная ошибка (среднее отклонение определённого количества внедрённой информации от реального):
+
+\begin{itemize}
+	\item для незаполненных изображений --- \textbf{0,010927};
+	\item для изображений, заполненных на 5\% --- \textbf{0,010428};
+	\item общая --- \textbf{0,010677}.
+\end{itemize}
+
+Дисперсия определённого количества внедрённой информации:
+
+\begin{itemize}
+	\item для незаполненных изображений --- \textbf{0,00023};
+	\item для изображений, заполненных на 5\% --- \textbf{0,000208};
+	\item усреднённая --- \textbf{0,000221}.
+\end{itemize}
+
+Полные статистические данные приведены в файле \path{rs_detector.ods} (файл таблиц LibreOffice Calc).
+
+\subsection{Выводы.}
+
+Из полученных результатов можно сделать следующие выводы:
+
+\begin{itemize}
+	\item Оба данных метода пригодны для определения количества внедрённой методом LSB replacement в изображение информации, при условии, что она распределена равномерно по всему контейнеру. Внедрения, распределённые иными способами, не изучались.
+	\item Для исследованных образцов наилучшие результаты показал RS-метод.
+	\item Оба рассмотренных метода пригодны для выявления внедрения при доле заполнения контейнера 5\%. Это подтверждается диаграммами, построенными в приложенных таблицах, где разбросы определяемых значений для пустого и заполненного контейнера мало пересекаются.
+\end{itemize}
+
+\begin{thebibliography}{9}
+	\bibitem{ker} Andrew D. Ker and Rainer Bohme; \emph{Revisiting Weighted Stego-Image Steganalysis}, \url{http://wi-vm988.uni-muenster.de/security/publications/KB2008_WS_Revisited_SPIE.pdf}.
+	\bibitem{fridrich} Jessica Fridrich, Miroslav Goljan and Rui Du; \emph{Reliable Detection of LSB Steganography in Color and Grayscale Images}, \url{http://ws2.binghamton.edu/fridrich/Research/acm_2001_03.pdf}.
+\end{thebibliography}
+
+
+%\listoffixmes % Do we need list of fix me's in the end?
+\end{document}
