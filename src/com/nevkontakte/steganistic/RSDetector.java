@@ -96,8 +96,8 @@ public class RSDetector {
 			Group group;
 
 			// Flip group
-			for (int i = 0; i < groupLength; i++) {
-				raster[i + groupLength] ^= 1;
+			for (int i = 0; i < groupLength && i + groupStart < raster.length; i++) {
+				raster[i + groupStart] ^= 1;
 			}
 
 			group = this.classifySample(raster, groupStart, groupLength, positivePattern);
@@ -114,8 +114,8 @@ public class RSDetector {
 			}
 
 			// Flip group back
-			for (int i = 0; i < groupLength; i++) {
-				raster[i + groupLength] ^= 1;
+			for (int i = 0; i < groupLength && i + groupStart < raster.length; i++) {
+				raster[i + groupStart] ^= 1;
 			}
 		}
 
@@ -142,7 +142,7 @@ public class RSDetector {
 	}
 
 	public double solve(double a, double b, double c) {
-		double d = b * b - 4 * a * c;
+		double d = (b * b) - (4 * a * c);
 
 		if (d < 0) {
 			return Double.NaN;
